@@ -3,8 +3,8 @@ import sys
 
 import click
 
-from helper import validate_inputs, parse_dict_file, read_input, slice_str, check_scrambled_form, get_dict_maps, \
-    get_byte_map
+from helper import (validate_inputs, parse_dict_file, read_input, slice_str, check_scrambled_form, get_dict_maps,
+                    get_byte_map)
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger()
