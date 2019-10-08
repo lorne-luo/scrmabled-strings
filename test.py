@@ -1,6 +1,6 @@
 import unittest
 
-from main import check_scrambled_form, parse_dict_file
+from main import check_scrambled_form, parse_dict_file, slice_str
 
 
 class TestCase(unittest.TestCase):
@@ -33,3 +33,16 @@ class TestCase(unittest.TestCase):
         self.assertTrue(4, len(dict_words[5]))
         self.assertTrue(3 in dict_words)
         self.assertTrue(4, len(dict_words[3]))
+
+    def test_slice_str(self):
+        result = slice_str('aapxjd', 0, 5)
+        self.assertEqual(result, 'aapxj')
+
+        result = slice_str('aapxjd', 2, 5)
+        self.assertEqual(result, None)
+
+        with self.assertRaises(ValueError):
+            slice_str('aapxjd', -1, 5)
+
+        with self.assertRaises(ValueError):
+            slice_str('aapxjd', -1, 0)

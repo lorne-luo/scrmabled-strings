@@ -51,6 +51,19 @@ def check_scrambled_form(source, target):
     return False
 
 
+def slice_str(src, start, length):
+    """slice str by start and len"""
+    if start < 0:
+        raise ValueError('start should be not less than 0.')
+    if length < 1:
+        raise ValueError('length should be greater than 0.')
+    end = start + length
+    if end > len(src):
+        return None
+
+    return src[start:end]
+
+
 @click.command()
 @click.option('--dictionary', help='path to dictionary file')
 @click.option('--input', default='', help='path to input file')
