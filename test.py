@@ -18,8 +18,11 @@ class TestCase(unittest.TestCase):
         result = check_scrambled_form('abpxj', 'aapxj')
         self.assertFalse(result)
 
-        result = check_scrambled_form('a', 'a')  # edge case
+        result = check_scrambled_form('\n', '\n')  # special case
         self.assertTrue(result)
 
-        result = check_scrambled_form('', '')  # edge case
-        self.assertTrue(result)
+        with self.assertRaises(Exception):
+            check_scrambled_form('', '')  # param validation
+
+        with self.assertRaises(TypeError):
+            check_scrambled_form(2, 333)  # param validation

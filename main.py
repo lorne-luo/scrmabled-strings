@@ -16,10 +16,18 @@ def validate_inputs(dictionary, _input):
 
 def check_scrambled_form(source, target):
     """return True if source is a scrambled_form(include equal) of target"""
-    if not isinstance(str, source) or not isinstance(str, target):
-        raise Exception('check_scrambled_form() only accept str as param.')
+    if not isinstance(source, str) or not isinstance(target, str):
+        raise TypeError('check_scrambled_form() only accept str as param.')
 
-    raise NotImplementedError
+    if not len(source) or not len(target):
+        raise Exception('Please pass valid str into check_scrambled_form().')
+
+    if source == target:
+        # shortcut for equal
+        return True
+    if source[0] == target[0] and source[-1] == target[-1] and set(source) == set(target):
+        return True
+    return False
 
 
 @click.command()
