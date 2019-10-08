@@ -17,9 +17,8 @@ The only one third-party package needed is [Click](https://click.palletsprojects
 ```
 git clone https://github.com/lorne-luo/scrmabled-strings.git 
 cd scrmabled-strings
-python3 -m venv venv
-source ./venv/bin/activate
-pip3 install -r requirements.txt
+pip3 install click
+python3 main.py --dictionary dict.txt --input input.txt --debug
 ```
 
 ## How to run
@@ -54,6 +53,17 @@ DEBUG:root:Words not found: {'abd'}
 4 words from the dictionary are found in the input.
 ```
 
+## How to run with docker
+
+### Step 1: build docker images
+```
+docker build -t scrmabled-strings .
+```
+### Step 2: run docker image with demo input
+```
+docker run scrmabled-strings
+```
+
 ## How to do programming integration
 Copy source code into you project, call with snippet below:
 ```
@@ -73,15 +83,15 @@ map = get_byte_map('abbz')
 print(map)
 ```
 ```
-bytearray(b'\x01\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01')
+> bytearray(b'\x01\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01')
 ```
 
 ```
-# let's check int value
+# check int frequency for 'abbz'
 print([x for x in map])
 ```
 ```
-[1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+> [1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
 ```
 
 
@@ -95,9 +105,9 @@ word_map_groups = get_dict_maps({'axpaj', 'apxaj', 'pjxdn', 'dnrbt', 'abd'})
 pprint(word_map_groups)
 ```
 ```
-{3: {'abd': bytearray(b'\x01\x01\x00\x01\x00\x00\x00\x00'
-                      b'\x00\x00\x00\x00\x00\x00\x00\x00'
-                      b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')},
+> {3: {'abd': bytearray(b'\x01\x01\x00\x01\x00\x00\x00\x00'
+                        b'\x00\x00\x00\x00\x00\x00\x00\x00'
+                        b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')},
  5: {'apxaj': bytearray(b'\x02\x00\x00\x00\x00\x00\x00\x00'
                         b'\x00\x01\x00\x00\x00\x00\x00\x01'
                         b'\x00\x00\x00\x00\x00\x00\x00\x01'
@@ -118,10 +128,18 @@ pprint(word_map_groups)
 ```
  
 ## How to test
-Simply run
+Simply run `python3 -m unittest discover`
 ```
-python3 -m unittest discover
+>>> python3 -m unittest discover
+
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.003s
+
+OK
 ```
 
 ## Other
+- The development applied TDD, all unit testes are committed with the feature
+- All logging are redirect to stdout
 - Source codes are formatted by [black](https://github.com/python/black) to enhance the readability.
