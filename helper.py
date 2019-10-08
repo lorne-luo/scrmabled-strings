@@ -6,10 +6,14 @@ def validate_inputs(dictionary, _input):
     """validate input file existed"""
 
     if not os.path.isfile(dictionary):
-        raise Exception(f'Can\'t find {dictionary}, please input a valid relative filename or absolute path.')
+        raise Exception(
+            f"Can't find {dictionary}, please input a valid relative filename or absolute path."
+        )
 
     if not os.path.isfile(_input):
-        raise Exception(f'Can\'t find {_input}, please input a valid relative filename or absolute path.')
+        raise Exception(
+            f"Can't find {_input}, please input a valid relative filename or absolute path."
+        )
 
 
 def parse_dict_file(dict_file):
@@ -36,7 +40,7 @@ def get_dict_maps(words):
 
 def read_input(input_file):
     """get first line as input, ignore below"""
-    first_line = ''
+    first_line = ""
 
     with open(input_file) as file_handler:
         for line in read_line(file_handler):
@@ -57,10 +61,10 @@ def read_line(file):
 def check_scrambled_form(source, source_map, target, target_map):
     """return True if source is a scrambled_form(include equal) of target"""
     if not isinstance(source, str) or not isinstance(target, str):
-        raise TypeError('check_scrambled_form() only accept str as param.')
+        raise TypeError("check_scrambled_form() only accept str as param.")
 
     if not len(source) or not len(target):
-        raise Exception('Please pass valid str into check_scrambled_form().')
+        raise Exception("Please pass valid str into check_scrambled_form().")
 
     if source == target:
         # shortcut for equal
@@ -74,12 +78,14 @@ def get_byte_map(word):
     """Bytes map to store char frequency for word, reach byte can store int up to 255"""
     arr = bytearray(26)
     for c in word:
-        if ord(c) < ord('a') or ord(c) > ord('z'):
+        if ord(c) < ord("a") or ord(c) > ord("z"):
             # skip invalid char
             continue
-        index = ord(c) % ord('a')
-        if arr[index]==255:
-            raise ValueError(f'Char `{c}` in word `{word}` exceed 255, which is a invalid input for this system.')
+        index = ord(c) % ord("a")
+        if arr[index] == 255:
+            raise ValueError(
+                f"Char `{c}` in word `{word}` exceed 255, which is a invalid input for this system."
+            )
         arr[index] += 1
     return arr
 
@@ -87,9 +93,9 @@ def get_byte_map(word):
 def slice_str(src, start, length):
     """slice str by start and len"""
     if start < 0:
-        raise ValueError('start should be not less than 0.')
+        raise ValueError("start should be not less than 0.")
     if length < 1:
-        raise ValueError('length should be greater than 0.')
+        raise ValueError("length should be greater than 0.")
     end = start + length
     if end > len(src):
         return None
