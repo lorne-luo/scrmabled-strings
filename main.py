@@ -1,78 +1,71 @@
-import os
+import logging
 import sys
-from collections import defaultdict
+from functools import reduce
+from operator import or_
 
 import click
 
+from helper import validate_inputs, parse_dict_file, read_input, slice_str, check_scrambled_form
 
-def validate_inputs(dictionary, _input):
-    """validate input file existed"""
-
-    if not os.path.isfile(dictionary):
-        raise Exception(f'Can\'t find {dictionary}, please input a valid relative filename or absolute path.')
-
-    if not os.path.isfile(_input):
-        raise Exception(f'Can\'t find {_input}, please input a valid relative filename or absolute path.')
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logger = logging.getLogger()
 
 
-def parse_dict_file(dic_file):
-    """get dict words and group them by length"""
-    dict_words = defaultdict(list)
-
-    with open(dic_file) as file_handler:
-        for line in read_line(file_handler):
-            word = line.strip()
-            dict_words[len(word)].append(word)
-    return dict_words
-
-
-def read_line(file):
-    """Generator to read a large file lazily"""
-    while True:
-        line = file.readline()
-        if not line:
-            break
-        yield line
-
-
-def check_scrambled_form(source, target):
-    """return True if source is a scrambled_form(include equal) of target"""
-    if not isinstance(source, str) or not isinstance(target, str):
-        raise TypeError('check_scrambled_form() only accept str as param.')
-
-    if not len(source) or not len(target):
-        raise Exception('Please pass valid str into check_scrambled_form().')
-
-    if source == target:
-        # shortcut for equal
-        return True
-    if source[0] == target[0] and source[-1] == target[-1] and set(source) == set(target):
-        return True
-    return False
-
-
-def slice_str(src, start, length):
-    """slice str by start and len"""
-    if start < 0:
-        raise ValueError('start should be not less than 0.')
-    if length < 1:
-        raise ValueError('length should be greater than 0.')
-    end = start + length
-    if end > len(src):
-        return None
-
-    return src[start:end]
-
-
-@click.command()
-@click.option('--dictionary', help='path to dictionary file')
-@click.option('--input', default='', help='path to input file')
-def main(dictionary, input):
+def scrmabled_strings(dictionary, input, debug=False):
+    """do the scrmabled strings search"""
     try:
         validate_inputs(dictionary, input)
     except Exception as ex:
         print(ex)
         return
+    dict_words = parse_dict_file('dict.txt')
+    dict_total = sum([len(x) for x in dict_words.values()])
+    input_line = read_input('input.txt')
+    found_words = set()
+
+    # print the searching words
+    print(f'Search: {reduce(or_, dict_words.values())}')
+
+    # create cursor for each length of dict word, all start from 0
+    cursor = dict.fromkeys(dict_words.keys(), 0)
+
+    while cursor:
+        for word_len in dict_words.keys():
+            if word_len not in cursor:
+                # this length of word already finished
+                continue
+            slice = slice_str(input_line, cursor[word_len], word_len)
+
+            if not slice:
+                #  is search ended, pop this len from cursor
+                cursor.pop(word_len)
+                continue
+            for word in dict_words[word_len].copy():
+                if check_scrambled_form(word, slice):
+                    # found, pop it from target dict
+                    logger.debug(f'Pop "{word}" matching with "{slice}"')
+                    dict_words[word_len].remove(word)
+                    found_words.add(word)
+            cursor[word_len] += 1
+    dict_rest = sum([len(x) for x in dict_words.values()])
+
+    # print the searching result
+    logger.info(f'Word matched: {found_words}')
+
+    logger.info(f'Word not matched: {reduce(or_, dict_words.values())}')
+
+    return dict_total - dict_rest
+
+
+@click.command()
+@click.option('--dictionary', help='path to dictionary file')
+@click.option('--input', default='', help='path to input file')
+@click.option('--debug', default=False, help='print loop step info for debugging')
+def main(dictionary, input, debug):
+    """just a wrapper entry"""
+    if debug:
+        logger.setLevel(logging.DEBUG)
+    scrmabled_strings(dictionary, input, debug)
 
 
 if __name__ == "__main__":

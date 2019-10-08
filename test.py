@@ -1,6 +1,7 @@
 import unittest
 
-from main import check_scrambled_form, parse_dict_file, slice_str
+from helper import check_scrambled_form, parse_dict_file, slice_str, read_input
+from main import scrmabled_strings
 
 
 class TestCase(unittest.TestCase):
@@ -46,3 +47,11 @@ class TestCase(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             slice_str('aapxjd', -1, 0)
+
+    def test_read_input(self):
+        line = read_input('input.txt')
+        self.assertTrue(line.startswith('aa'))
+
+    def test_main(self):
+        counter = scrmabled_strings('dict.txt', 'input.txt')
+        self.assertEqual(counter, 4)
