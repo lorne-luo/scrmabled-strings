@@ -87,7 +87,7 @@ print([x for x in map])
 
 2. **Acceleration by dict word length group**
 
-All dict words are group by its length, so each slice from input file could be reuse for same length dict word
+All dict words are grouped by its length, so each slice string from the input file could be reuse for checking  all dict words with same length 
 ```
 from pprint import pprint
 from helper import get_dict_maps
