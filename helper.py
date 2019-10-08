@@ -40,13 +40,12 @@ def get_dict_maps(words):
 
 def read_input(input_file):
     """get first line as input, ignore below"""
-    first_line = ""
+    lines = []
 
     with open(input_file) as file_handler:
         for line in read_line(file_handler):
-            first_line = line.strip()
-            break
-    return first_line
+            lines.append(line.strip())
+    return lines
 
 
 def read_line(file):

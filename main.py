@@ -24,37 +24,38 @@ def scrmabled_strings(dictionary, input):
     dict_words = parse_dict_file("dict.txt")
     length_grouped_word_maps = get_dict_maps(dict_words)
     dict_total = len(dict_words)
-    input_line = read_input("input.txt")
+    input_lines = read_input("input.txt")
     found_words = set()
 
     # print the searching words
     logger.debug(f"Search: {dict_words}")
 
-    # create cursor for each length channel of dict word, all start from 0
-    dict_cursor = dict.fromkeys(length_grouped_word_maps.keys(), 0)
+    for line in input_lines:
+        # create cursor for each length channel of dict word, all start from 0
+        dict_cursor = dict.fromkeys(length_grouped_word_maps.keys(), 0)
 
-    while dict_cursor:
-        for word_len in length_grouped_word_maps.keys():
-            if word_len not in dict_cursor:
-                # this length of word already finished
-                continue
+        while dict_cursor:
+            for word_len in length_grouped_word_maps.keys():
+                if word_len not in dict_cursor:
+                    # this length of word already finished
+                    continue
 
-            slice = slice_str(input_line, dict_cursor[word_len], word_len)
-            if not slice:
-                #  is search ended, pop this len from cursor
-                dict_cursor.pop(word_len)
-                continue
+                slice = slice_str(line, dict_cursor[word_len], word_len)
+                if not slice:
+                    #  is search ended, pop this len from cursor
+                    dict_cursor.pop(word_len)
+                    continue
 
-            slice_byte_map = get_byte_map(slice)
+                slice_byte_map = get_byte_map(slice)
 
-            for word in list(length_grouped_word_maps[word_len].keys()):
-                word_map = length_grouped_word_maps[word_len][word]
-                if check_scrambled_form(word, word_map, slice, slice_byte_map):
-                    # found, pop it from target dict
-                    logger.debug(f'Pop "{word}" as match with "{slice}"')
-                    length_grouped_word_maps[word_len].pop(word)
-                    found_words.add(word)
-            dict_cursor[word_len] += 1
+                for word in list(length_grouped_word_maps[word_len].keys()):
+                    word_map = length_grouped_word_maps[word_len][word]
+                    if check_scrambled_form(word, word_map, slice, slice_byte_map):
+                        # found, pop it from target dict
+                        logger.debug(f'Pop "{word}" as match with "{slice}"')
+                        length_grouped_word_maps[word_len].pop(word)
+                        found_words.add(word)
+                dict_cursor[word_len] += 1
     dict_rest = sum([len(x) for x in length_grouped_word_maps.values()])
 
     # print the searching result

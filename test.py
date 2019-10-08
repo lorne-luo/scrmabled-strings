@@ -104,8 +104,9 @@ class TestCase(unittest.TestCase):
 
     def test_read_input(self):
         line = read_input("input.txt")
-        self.assertTrue(line.startswith("aa"))
-        self.assertTrue("\n" not in line)
+        self.assertTrue(isinstance(line,list))
+        self.assertTrue(line[0].startswith("aa"))
+        self.assertTrue("\n" not in line[0])
 
     def test_main(self):
         counter = scrmabled_strings("dict.txt", "input.txt")

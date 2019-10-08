@@ -64,7 +64,7 @@ found_counter = scrmabled_strings('dict.txt','input.txt')
 ## Implementation
 1. **Scrmabled word identification**
 
-It used a 26 length bytes-map to identify scrmabled form word, each value represent the frequency for alphabet a-z.
+It used a 26 dimensions bytes-map to identify scrmabled form word, each byte represent the frequency for alphabet a-z.
 
 The limitation of this design is due to each byte only support int up to 255, it will raise error if one dict word have more than 255 char 'a' in it. 
 ```
@@ -123,6 +123,5 @@ Simply run
 python3 -m unittest discover
 ```
 
-## TBD
-- Currently only do the search for the first line of input file, will solve it later
-- Will create Dockerfile later 
+## Other
+- Source codes are formatted by [black](https://github.com/python/black) to enhance the readability.
