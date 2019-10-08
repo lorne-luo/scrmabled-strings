@@ -1,5 +1,6 @@
 import os
 import sys
+from collections import defaultdict
 
 import click
 
@@ -12,6 +13,26 @@ def validate_inputs(dictionary, _input):
 
     if not os.path.isfile(_input):
         raise Exception(f'Can\'t find {_input}, please input a valid relative filename or absolute path.')
+
+
+def parse_dict_file(dic_file):
+    """get dict words and group them by length"""
+    dict_words = defaultdict(list)
+
+    with open(dic_file) as file_handler:
+        for line in read_line(file_handler):
+            word = line.strip()
+            dict_words[len(word)].append(word)
+    return dict_words
+
+
+def read_line(file):
+    """Generator to read a large file lazily"""
+    while True:
+        line = file.readline()
+        if not line:
+            break
+        yield line
 
 
 def check_scrambled_form(source, target):
