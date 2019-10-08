@@ -14,14 +14,24 @@ def validate_inputs(dictionary, _input):
 
 def parse_dict_file(dict_file):
     """get dict words and group them by length"""
-    dict_words = defaultdict(set)
+    dict_words = set()
 
     with open(dict_file) as file_handler:
         for line in read_line(file_handler):
             word = line.strip()
-            dict_words[len(word)].add(word)
-
+            dict_words.add(word)
     return dict_words
+
+
+def get_dict_maps(words):
+    """get a dict group by word length"""
+    dict_maps = defaultdict(dict)
+
+    for line in words:
+        word = line.strip()
+        dict_maps[len(word)][word] = get_byte_map(word)
+
+    return dict_maps
 
 
 def read_input(input_file):
@@ -44,7 +54,7 @@ def read_line(file):
         yield line
 
 
-def check_scrambled_form(source, target):
+def check_scrambled_form(source, source_map, target, target_map):
     """return True if source is a scrambled_form(include equal) of target"""
     if not isinstance(source, str) or not isinstance(target, str):
         raise TypeError('check_scrambled_form() only accept str as param.')
@@ -55,9 +65,23 @@ def check_scrambled_form(source, target):
     if source == target:
         # shortcut for equal
         return True
-    if source[0] == target[0] and source[-1] == target[-1] and set(source) == set(target):
+    if source[0] == target[0] and source[-1] == target[-1] and source_map == target_map:
         return True
     return False
+
+
+def get_byte_map(word):
+    """Bytes map to store char frequency for word, reach byte can store int up to 255"""
+    arr = bytearray(26)
+    for c in word:
+        if ord(c) < ord('a') or ord(c) > ord('z'):
+            # skip invalid char
+            continue
+        index = ord(c) % ord('a')
+        if arr[index]==255:
+            raise ValueError(f'Char `{c}` in word `{word}` exceed 255, which is a invalid input for this system.')
+        arr[index] += 1
+    return arr
 
 
 def slice_str(src, start, length):
