@@ -12,11 +12,8 @@ logger = logging.getLogger()
 
 def scrmabled_strings(dictionary, input):
     """do the scrmabled strings search"""
-    try:
-        validate_inputs(dictionary, input)
-    except Exception as ex:
-        print(ex)
-        return
+    validate_inputs(dictionary, input)
+
     dict_words = parse_dict_file('dict.txt')
     length_grouped_word_maps = get_dict_maps(dict_words)
     dict_total = len(dict_words)
@@ -62,15 +59,19 @@ def scrmabled_strings(dictionary, input):
 
 
 @click.command()
-@click.option('--dictionary', '-d', help='path to dictionary file')
-@click.option('--input', '-i', default='', help='path to input file')
-@click.option('--debug', '-d', is_flag=True, default=False, help='print loop step info for debugging')
+@click.option('--dictionary', '-d', required=True, help='path to dictionary file')
+@click.option('--input', '-i', required=True, help='path to input file')
+@click.option('--debug', is_flag=True, default=False, help='print loop step info for debugging')
 def main(dictionary, input, debug):
-    """just a wrapper entry"""
+    """Find scrmabled-form word from input file """
     if debug:
         logger.setLevel(logging.DEBUG)
-    result = scrmabled_strings(dictionary, input, debug)
-    print(f'{result} words from the dictionary are found in the input.')
+    try:
+        result = scrmabled_strings(dictionary, input)
+        print(f'{result} words from the dictionary are found in the input.')
+    except Exception as ex:
+        print(ex)
+        return
 
 
 if __name__ == "__main__":
